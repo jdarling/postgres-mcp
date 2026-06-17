@@ -1,0 +1,49 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://example.com/postgres-mcp/global-config.schema.yaml
+type: object
+additionalProperties: false
+required:
+  - catalog
+properties:
+  catalog:
+    type: object
+    additionalProperties: false
+    required:
+      - root
+    properties:
+      root:
+        type: string
+      watch:
+        type: object
+        additionalProperties: false
+        properties:
+          enabled:
+            type: boolean
+          debounceMs:
+            type: integer
+            minimum: 0
+  runtime:
+    $ref: "#/$defs/runtime"
+  pool:
+    $ref: "implementation-profile.schema.yaml#/$defs/pool"
+  audit:
+    type: object
+    additionalProperties: false
+    properties:
+      enabled:
+        type: boolean
+      sink:
+        type: string
+$defs:
+  runtime:
+    type: object
+    additionalProperties: false
+    properties:
+      timeout:
+        type: string
+        pattern: "^[0-9]+(ms|s|m|h)$"
+      maxRows:
+        anyOf:
+          - type: integer
+            minimum: 0
+          - type: "null"

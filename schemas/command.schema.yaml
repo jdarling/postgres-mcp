@@ -1,0 +1,47 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://example.com/postgres-mcp/command.schema.yaml
+type: object
+additionalProperties: false
+required:
+  - name
+properties:
+  name:
+    type: string
+  alias:
+    type: string
+  description:
+    type: string
+  script:
+    type: string
+  function:
+    type: string
+  procedure:
+    type: string
+  runtime:
+    $ref: "global-config.schema.yaml#/$defs/runtime"
+  args:
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+          pattern: "^[A-Za-z0-9]+$"
+        type:
+          enum: [string, integer, number, boolean, date, timestamp, json]
+        optional:
+          type: boolean
+        default:
+          description: Default argument value.
+        sensitive:
+          type: boolean
+        description:
+          type: string
+oneOf:
+  - required: [script]
+  - required: [function]
+  - required: [procedure]

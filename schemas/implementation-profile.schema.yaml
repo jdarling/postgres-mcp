@@ -1,0 +1,23 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://example.com/postgres-mcp/implementation-profile.schema.yaml
+$comment: >
+  This file is completed by the selected implementation. It must name the
+  implementation language, MCP framework, PostgreSQL driver, and concrete pool
+  configuration fields supported by that driver.
+type: object
+additionalProperties: false
+properties:
+  language:
+    type: string
+  mcpFramework:
+    type: string
+  postgresDriver:
+    type: string
+$defs:
+  pool:
+    type: object
+    additionalProperties: false
+    properties:
+      # Implementation profile fills in driver-specific pool fields here.
+      # Example for one implementation might include maxConnections,
+      # idleTimeout, connectionLifetime, or acquisitionTimeout.

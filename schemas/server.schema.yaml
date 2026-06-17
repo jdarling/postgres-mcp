@@ -1,0 +1,119 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://example.com/postgres-mcp/server.schema.yaml
+type: object
+additionalProperties: false
+required:
+  - name
+  - postgres
+  - secrets
+properties:
+  name:
+    type: string
+  alias:
+    type: string
+  description:
+    type: string
+  postgres:
+    type: object
+    additionalProperties: false
+    required:
+      - connect
+    properties:
+      version:
+        type: integer
+      connect:
+        oneOf:
+          - $ref: "#/$defs/usernamePasswordConnect"
+          - $ref: "#/$defs/connectionStringConnect"
+          - $ref: "#/$defs/serviceConnect"
+  secrets:
+    oneOf:
+      - $ref: "#/$defs/envSecrets"
+      - $ref: "#/$defs/fileSecrets"
+      - $ref: "#/$defs/noSecrets"
+  runtime:
+    $ref: "global-config.schema.yaml#/$defs/runtime"
+  pool:
+    $ref: "implementation-profile.schema.yaml#/$defs/pool"
+$defs:
+  usernamePasswordConnect:
+    type: object
+    additionalProperties: false
+    required: [type, host, port, database]
+    properties:
+      type:
+        const: usernamePassword
+      host:
+        type: string
+      port:
+        type: integer
+      database:
+        type: string
+      ssl:
+        $ref: "#/$defs/ssl"
+  connectionStringConnect:
+    type: object
+    additionalProperties: false
+    required: [type, connectionStringRef]
+    properties:
+      type:
+        const: connectionString
+      connectionStringRef:
+        type: string
+  serviceConnect:
+    type: object
+    additionalProperties: false
+    required: [type, serviceName]
+    properties:
+      type:
+        const: service
+      serviceName:
+        type: string
+      serviceFile:
+        type: string
+      passFile:
+        type: string
+  envSecrets:
+    type: object
+    additionalProperties: false
+    required: [provider]
+    properties:
+      provider:
+        const: env
+      usernameRef:
+        type: string
+      passwordRef:
+        type: string
+  fileSecrets:
+    type: object
+    additionalProperties: false
+    required: [provider]
+    properties:
+      provider:
+        const: file
+      usernamePath:
+        type: string
+      passwordPath:
+        type: string
+  noSecrets:
+    type: object
+    additionalProperties: false
+    required: [provider]
+    properties:
+      provider:
+        const: none
+  ssl:
+    type: object
+    additionalProperties: false
+    required: [mode]
+    properties:
+      mode:
+        enum: [disable, allow, prefer, require, verify-ca, verify-full]
+      ca:
+        type: string
+      cert:
+        type: string
+      key:
+        type: string
+      rejectUnauthorized:
+        type: boolean
